@@ -2,12 +2,19 @@ import { createClient } from "@supabase/supabase-js"; // or const { createClient
 
 // Remove duplicate declaration
 
-
+import dotenv from "dotenv";
 dotenv.config();
+import express from "express";
+import cors from "cors";
+import { createClient } from "@supabase/supabase-js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const { createClient } = require("@supabase/supabase-js");
 
 // --- SUPABASE CLIENT (backend uses service role key) ---
 const supabase = createClient(
