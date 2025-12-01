@@ -1,8 +1,7 @@
-// index.js
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const { createClient } = require("@supabase/supabase-js");
+import { createClient } from "@supabase/supabase-js"; // or const { createClient } = require("@supabase/supabase-js");
+
+// Remove duplicate declaration
+
 
 dotenv.config();
 
@@ -67,22 +66,27 @@ app.post("/api/sales", async(req, res) => {
 });
 
 // 🔧 Track repair status (Customer dashboard)
-app.post("/api/repairs/track", async(req, res) => {
-    const { repair_id, phone } = req.body;
+app.post("/api/inventory", async(req, res) => {
+    const { brand, model, type, price, quantity, image_url, gender } = req.body;
 
-    const { data, error } = await supabase
-        .from("repairs")
-        .select("*")
-        .eq("repair_id", repair_id)
-        .eq("customer_phone", phone)
-        .maybeSingle();
+    const { data, error } = await supabase.from("watches").insert([{
+        brand,
+        model,
+        type,
+        price,
+        quantity,
+        image_url,
+        gender: gender || "Unisex", // ✅ default if not provided
+    }, ]);
 
-    if (error || !data) {
-        return res.status(404).json({ error: "Repair not found" });
+    if (error) {
+        console.error("Insert error", error);
+        return res.status(500).json({ error: error.message });
     }
 
-    res.json(data);
+    return res.status(201).json(data);
 });
+
 
 // Start server
 const PORT = process.env.PORT || 4000;
